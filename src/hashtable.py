@@ -51,9 +51,21 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
+        last_pair = None
 
+        while current_pair is not None and current_pair.key != key:
+            last_pair = current_pair
+            current_pair = last_pair.next
 
+        if current_pair is not None:
+            current_pair.value = value
+
+        else:
+            new_pair = LinkedPair(key, value)
+            new_pair.next = self.storage[index]
+            self.storage[index] = new_pair
 
     def remove(self, key):
         '''
@@ -63,8 +75,22 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
+        last_pair = None
 
+        while current_pair is not None and current_pair.key != key:
+            last_pair = current_pair
+            current_pair = last_pair.next
+
+        if current_pair is None:
+            print("Can not find " + key)
+
+        else:
+            if last_pair is None:
+                self.storage[index] = current_pair.next
+            else:
+                last_pair.next = current_pair.next
 
     def retrieve(self, key):
         '''
@@ -74,8 +100,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
 
+        while current_pair is not None:
+            if current_pair.key == key:
+                return current_pair.value
+            current_pair = current_pair.next
 
     def resize(self):
         '''
@@ -84,8 +115,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        old_storage = self.storage
+        self.capacity = 2 * self.capacity
+        self.storage = [None] * self.capacity
+        current_pair = None
 
+        for bucket_item in old_storage:
+            current_pair = bucket_item
+            
+            while current_pair is not None:
+                self.insert(current_pair.key, current_pair.value)
+                current_pair = current_pair.next
 
 
 if __name__ == "__main__":
